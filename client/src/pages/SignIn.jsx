@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { signInFailure, signInStart, signInSuccess } from '../redux/user/userSlice';
+import OAuth from '../components/OAuth';
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -59,6 +60,7 @@ const SignIn = () => {
         <input type='email' placeholder='email' id='email' className='border p-3 rounded-lg' onChange={handleChange} />
         <input type='password' placeholder='password' id='password' className='border p-3 rounded-lg' onChange={handleChange} />
         <button disabled={loading} className='bg-slate-700  text-white p-3 rounded-lg uppercase hover:opacity-95' onClick={notify}>{loading ? "loading..." : "Sign In"}</button>
+        <OAuth/>
         <ToastContainer />
       </form>
       <div className='flex gap-2 mt-5'>
