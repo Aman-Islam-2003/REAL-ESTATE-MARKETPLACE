@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import OAuth from '../components/OAuth';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -58,6 +59,7 @@ const SignUp = () => {
         <input type='password' placeholder='password' id='password' className='border p-3 rounded-lg' onChange={handleChange} />
         <button disabled={loading} className='bg-slate-700  text-white p-3 rounded-lg uppercase hover:opacity-95' onClick={notify}>{loading ? "loading..." : "Sign Up"}</button>
         <ToastContainer />
+        <OAuth/>
       </form>
       <div className='flex gap-2 mt-5'>
         <p>Have an account?</p>
