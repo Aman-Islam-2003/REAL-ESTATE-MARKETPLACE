@@ -61,7 +61,7 @@ const SignUp = () => {
         <ToastContainer />
         <OAuth/>
       </form>
-      <div className='flex gap-2 mt-5'>
+      <div className='flex gap-2 m t-5'>
         <p>Have an account?</p>
         <Link to={"/sign-in"}>
           <span className='text-red-800'>Sign in</span>
