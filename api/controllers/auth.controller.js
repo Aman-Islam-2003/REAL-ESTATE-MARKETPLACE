@@ -45,7 +45,7 @@ export const signin = async (req, res, next) => {
     // console.log(user)
     const { password: pass, ...rest } = user._doc;
     res
-      .cookie("access-token", token, {
+      .cookie("access_token", token, {
         httpOnly: true,
       })
       .status(200)
@@ -79,7 +79,7 @@ export const google = async (req, res, next) => {
       const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET);
       const { password: pass, ...rest } = newUser._doc;
       res
-        .cookie("access-token", token, {
+        .cookie("access_token", token, {
           httpOnly: true,
         })
         .status(200)
@@ -88,7 +88,7 @@ export const google = async (req, res, next) => {
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
     const { password: pass, ...rest } = user._doc;
     res
-      .cookie("access-token", token, {
+      .cookie("access_token", token, {
         httpOnly: true,
       })
       .status(200)
