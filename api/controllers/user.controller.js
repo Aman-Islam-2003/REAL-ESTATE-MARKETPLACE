@@ -35,3 +35,19 @@ export const updateUser = async (req, res, next) => {
     next(error);
   }
 };
+
+export const deleteUser = async (req, res, next) => {
+  try {
+    let { user } = req;
+    const { id } = req.params;
+
+    if (user.id != id) {
+      return next(errorHandler(401, "You can only delete your own account"));
+    }
+    await User.findByIdAndDelete(id);
+    res.clearCookie('access_token');
+    res.status(200).json("User deleted successfully!!");
+  } catch (error) {
+    next(error);
+  }
+};
