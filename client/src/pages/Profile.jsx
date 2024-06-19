@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useReducer } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
-import { updateUserStart, updateUserFailure, updateUserSuccess } from '../redux/user/userSlice';
+import { updateUserStart, updateUserFailure, updateUserSuccess, deleteUserFailure, deleteUserStart, deleteUserSuccess } from '../redux/user/userSlice';
 
 
 const Profile = () => {
@@ -78,6 +78,23 @@ const Profile = () => {
       dispatch(updateUserFailure(error.message));
     }
   };
+
+  const deleteHandler =async ()=>{
+    try{
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`,{
+        method: 'DELETE'
+      })
+      const data = await res.json();
+      if(data.success === false){
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(data)); 
+    }catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  }
   return (
     <div className='flex flex-col justify-center items-center mt-7 gap-y-4'>
       <h1 className='font-bold text-2xl'>Profile</h1>
@@ -110,10 +127,9 @@ const Profile = () => {
         <button className='uppercase w-full bg-green-800 text-white rounded py-2 hover:opacity-95'>Create Listing</button>
       </form>
       <div className='flex justify-between w-2/6 text-red-800 text-sm cursor-pointer'>
-        <span>Delete Account</span>
+        <span onClick={deleteHandler}>Delete Account</span>
         <span>Sign out</span>
       </div>
-      <p className='text-red-700 mt-5'>{error ? error : ''}</p>
       <p className='text-green-700 mt-5'>
         {updateSuccess ? 'User updated successfully' : ''}
       </p>
