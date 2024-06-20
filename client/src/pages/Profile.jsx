@@ -2,7 +2,8 @@ import React, { useRef, useState, useEffect, useReducer } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
-import { updateUserStart, updateUserFailure, updateUserSuccess, deleteUserFailure, deleteUserStart, deleteUserSuccess } from '../redux/user/userSlice';
+import {Link} from 'react-router-dom';
+import { updateUserStart, updateUserFailure, updateUserSuccess, deleteUserFailure, deleteUserStart, deleteUserSuccess, signOutStart, signOutFailure, signOutSuccess } from '../redux/user/userSlice';
 
 
 const Profile = () => {
@@ -95,6 +96,22 @@ const Profile = () => {
       dispatch(deleteUserFailure(error.message));
     }
   }
+
+  const signOutHandler = async ()=>{
+    try{
+      dispatch(signOutStart())
+      const res = await fetch(`/api/auth/signout`)
+      const data = res.json();
+
+      if(data.success === false){
+        dispatch(signOutFailure(data.message))
+        return;
+      }
+      dispatch(signOutSuccess(data))
+    }catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  }
   return (
     <div className='flex flex-col justify-center items-center mt-7 gap-y-4'>
       <h1 className='font-bold text-2xl'>Profile</h1>
@@ -124,11 +141,11 @@ const Profile = () => {
         <input type='email' id='email' defaultValue={currentUser.email} placeholder='email' onChange={changeHandler} className='rounded py-2 px-1' />
         <input type='password' id='password' onChange={changeHandler} placeholder='password' className='rounded py-2 px-1' />
         <button disabled={loading} className='uppercase w-full bg-slate-700 text-white rounded py-2 hover:opacity-95'>{loading ? 'loading...' : 'Update'}</button>
-        <button className='uppercase w-full bg-green-800 text-white rounded py-2 hover:opacity-95'>Create Listing</button>
+        <Link className='uppercase w-full bg-green-800 text-white rounded py-2 hover:opacity-95 text-center' to={"/create-listing"}>Create Listing</Link>
       </form>
       <div className='flex justify-between w-2/6 text-red-800 text-sm cursor-pointer'>
         <span onClick={deleteHandler}>Delete Account</span>
-        <span>Sign out</span>
+        <span onClick={signOutHandler}>Sign out</span>
       </div>
       <p className='text-green-700 mt-5'>
         {updateSuccess ? 'User updated successfully' : ''}
