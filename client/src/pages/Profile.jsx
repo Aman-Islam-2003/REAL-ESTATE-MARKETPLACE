@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect, useReducer } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import { getDownloadURL, getStorage, list, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { updateUserStart, updateUserFailure, updateUserSuccess, deleteUserFailure, deleteUserStart, deleteUserSuccess, signOutStart, signOutFailure, signOutSuccess } from '../redux/user/userSlice';
 
 
@@ -15,6 +15,8 @@ const Profile = () => {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [showListingError, setShowListingError] = useState(false);
+  const [listings, setListings] = useState([]);
 
   console.log(currentUser)
 
@@ -55,7 +57,6 @@ const Profile = () => {
     })
   };
 
-  console.log(currentUser)
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
@@ -80,36 +81,51 @@ const Profile = () => {
     }
   };
 
-  const deleteHandler =async ()=>{
-    try{
+  const deleteHandler = async () => {
+    try {
       dispatch(deleteUserStart());
-      const res = await fetch(`/api/user/delete/${currentUser._id}`,{
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
         method: 'DELETE'
       })
       const data = await res.json();
-      if(data.success === false){
+      if (data.success === false) {
         dispatch(deleteUserFailure(data.message));
         return;
       }
-      dispatch(deleteUserSuccess(data)); 
-    }catch (error) {
+      dispatch(deleteUserSuccess(data));
+    } catch (error) {
       dispatch(deleteUserFailure(error.message));
     }
   }
 
-  const signOutHandler = async ()=>{
-    try{
+  const signOutHandler = async () => {
+    try {
       dispatch(signOutStart())
       const res = await fetch(`/api/auth/signout`)
       const data = res.json();
 
-      if(data.success === false){
+      if (data.success === false) {
         dispatch(signOutFailure(data.message))
         return;
       }
       dispatch(signOutSuccess(data))
-    }catch (error) {
+    } catch (error) {
       dispatch(deleteUserFailure(error.message));
+    }
+  }
+
+  const handleShowListings = async () => {
+    try {
+      const res = await fetch(`/api/user/listings/${currentUser._id}`);
+      const data = await res.json();
+      console.log(data)
+      if (data.success === false) {
+        setShowListingError(true);
+        return;
+      }
+      setListings(data);
+    } catch (error) {
+      setShowListingError(true);
     }
   }
   return (
@@ -150,9 +166,37 @@ const Profile = () => {
       <p className='text-green-700 mt-5'>
         {updateSuccess ? 'User updated successfully' : ''}
       </p>
-      <div className='text-green-800'>
+      <button className='text-green-800' onClick={handleShowListings}>
         Show Listings
-      </div>
+      </button>
+      <p className='text-red-700 mt-2'>
+        {
+          showListingError ? "Error showing listing..." : ''
+        }
+      </p>
+      {
+        listings && listings.length > 0 &&
+         listings.map((listing) => (
+          <div className='flex items-center gap-6 border rounded-lg p-3 justify-between w-2/4' key={listing._id}>
+            <Link to={`/listing/${listing._id}`}>
+              <img src={listing.imageUrls[0]} alt='listing cover' className='h-16 w-16 object-contain' />
+            </Link>
+            <Link to={`/listing/${listing._id}`} className='text-slate-700 font-semibold hover:underline truncate flex-1'>
+              <p>
+                {listing.name}
+              </p>
+            </Link>
+            <div className='flex flex-col items-center'>
+              <button className='uppercase text-red-700'>Delete</button>
+              <button className='uppercase text-green-700'>Edit</button>
+            </div>
+
+
+          </div>
+
+        ))
+
+      }
     </div>
   )
 }
