@@ -141,14 +141,15 @@ const CreateListing = () => {
         }),
       })
 
-      const data = res.json();
+      const data = await res.json();
       setLoading(false);
 
       if (data.success === false) {
         setError(data.message);
         setLoading(false);
       }
-     navigate(`listing/${data._id}`)
+       navigate(`/listing/${data._id}`);
+      console.log(data)
     } catch (error) {
       setError(error.message);
       setLoading(false)
