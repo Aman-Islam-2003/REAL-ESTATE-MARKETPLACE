@@ -17,6 +17,7 @@ const Profile = () => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [showListingError, setShowListingError] = useState(false);
   const [listings, setListings] = useState([]);
+  const [deleteListingError, setDeleteListingError] = useState(false);
 
   console.log(currentUser)
 
@@ -128,6 +129,26 @@ const Profile = () => {
       setShowListingError(true);
     }
   }
+
+  const handleDeleteListing = async (listingId) => {
+    try {
+      const res = await fetch(`/api/listing/delete//${listingId}`,
+        {
+          method: 'DELETE'
+        }
+      )
+      const data = await res.json();
+      if (data.success === false) {
+        setDeleteListingError(true)
+      }
+
+      setListings((prev) =>
+        prev.filter((listing) => listing._id !== listingId))
+
+    } catch (error) {
+      setDeleteListingError(true);
+    }
+  }
   return (
     <div className='flex flex-col justify-center items-center mt-7 gap-y-4'>
       <h1 className='font-bold text-2xl'>Profile</h1>
@@ -176,7 +197,7 @@ const Profile = () => {
       </p>
       {
         listings && listings.length > 0 &&
-         listings.map((listing) => (
+        listings.map((listing) => (
           <div className='flex items-center gap-6 border rounded-lg p-3 justify-between w-2/4' key={listing._id}>
             <Link to={`/listing/${listing._id}`}>
               <img src={listing.imageUrls[0]} alt='listing cover' className='h-16 w-16 object-contain' />
@@ -187,15 +208,16 @@ const Profile = () => {
               </p>
             </Link>
             <div className='flex flex-col items-center'>
-              <button className='uppercase text-red-700'>Delete</button>
+              <button className='uppercase text-red-700' onClick={() => handleDeleteListing(listing._id)}>Delete</button>
+              <Link to={`/update-listing/${listing._id}`}> 
               <button className='uppercase text-green-700'>Edit</button>
+              </Link>
             </div>
 
 
           </div>
 
         ))
-
       }
     </div>
   )
