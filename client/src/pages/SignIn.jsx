@@ -19,7 +19,6 @@ const SignIn = () => {
       ...formData,
       [e.target.id]: e.target.value
     })
-    console.log(formData)
   }
 
   const handleSubmit = async (e) => {
@@ -46,7 +45,6 @@ const SignIn = () => {
       // setLoading(false);
       // setError(null);
       navigate('/')
-      console.log(data)
     } catch (error) {
       dispatch(signInFailure(error.message))
     }
