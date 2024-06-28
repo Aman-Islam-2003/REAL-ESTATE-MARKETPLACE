@@ -18,7 +18,6 @@ const SignUp = () => {
       ...formData,
       [e.target.id]: e.target.value
     })
-    console.log(formData)
   }
 
   const handleSubmit = async (e) => {
@@ -42,7 +41,6 @@ const SignUp = () => {
       setLoading(false);
       setError(null);
       navigate('/sign-in')
-      console.log(data)
     } catch (error) {
       setLoading(false);
       setError(data.message);
