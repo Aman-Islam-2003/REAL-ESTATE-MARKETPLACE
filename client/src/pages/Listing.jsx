@@ -45,8 +45,6 @@ const Listing = () => {
         }
         fetchListing();
     }, [params.listingId]);
-
-    console.log(listing)
     return (
         <div>
             {loading && <p className='text-center my-7 text-2xl'>Loading....</p>}
