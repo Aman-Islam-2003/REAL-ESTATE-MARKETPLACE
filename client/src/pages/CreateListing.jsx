@@ -28,7 +28,6 @@ const CreateListing = () => {
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  console.log(formData)
   const submitImageHandler = (e) => {
     e.preventDefault();
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
@@ -149,7 +148,6 @@ const CreateListing = () => {
         setLoading(false);
       }
        navigate(`/listing/${data._id}`);
-      console.log(data)
     } catch (error) {
       setError(error.message);
       setLoading(false)
