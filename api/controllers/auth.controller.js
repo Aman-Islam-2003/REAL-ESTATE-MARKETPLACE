@@ -33,27 +33,26 @@
 //       return next(errorHandler(400, "Required Fields cannot be empty"));
 //     }
 
-//     const user = await User.findOne({ email });
-//     if (!user) {
-//       return next(errorHandler(409, "User doesn't exist"));
-//     }
-//     const validPassword = bcryptjs.compareSync(password, user.password);
-//     if (!validPassword) {
-//       return next(errorHandler(409, "Wrong credentials"));
-//     }
-//     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-//     // console.log(user)
-//     const { password: pass, ...rest } = user._doc;
-//     res
-//       .cookie("access_token", token, {
-//         httpOnly: true,
-//       })
-//       .status(200)
-//       .json(rest);
-//   } catch (err) {
-//     next(errorHandler(500, "error here"));
-//   }
-// };
+    const user = await User.findOne({ email });
+    if (!user) {
+      return next(errorHandler(409, "User doesn't exist"));
+    }
+    const validPassword = bcryptjs.compareSync(password, user.password);
+    if (!validPassword) {
+      return next(errorHandler(409, "Wrong credentials"));
+    }
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+    const { password: pass, ...rest } = user._doc;
+    res
+      .cookie("access_token", token, {
+        httpOnly: true,
+      })
+      .status(200)
+      .json(rest);
+  } catch (err) {
+    next(errorHandler(500, "error here"));
+  }
+};
 
 // export const google = async (req, res, next) => {
 //   try {

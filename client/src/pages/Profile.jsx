@@ -19,8 +19,6 @@ const Profile = () => {
   const [listings, setListings] = useState([]);
   const [deleteListingError, setDeleteListingError] = useState(false);
 
-  console.log(currentUser)
-
   useEffect(() => {
     if (file) {
       handleFileUpload(file);
@@ -119,7 +117,6 @@ const Profile = () => {
     try {
       const res = await fetch(`/api/user/listings/${currentUser._id}`);
       const data = await res.json();
-      console.log(data)
       if (data.success === false) {
         setShowListingError(true);
         return;
